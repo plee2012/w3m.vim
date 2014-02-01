@@ -55,6 +55,7 @@ function! w3m#CheckUnderCursor()
     endif
     if has_key(b:tag_list[tidx].attr, 'href')
       echo b:tag_list[tidx].attr.href
+	  let b:last_url = b:tag_list[tidx].attr.href
       break
     endif
     let tidx -= 1
@@ -681,7 +682,20 @@ function! s:keymap()
     nmap <buffer>#           #<Plug>(w3m-search-end)
     nmap <buffer><m-d>       <Plug>(w3m-address-bar)
     exe 'nmap <buffer>' . g:w3m#hit_a_hint_key . ' <Plug>(w3m-hit-a-hint)'
+	nmap <buffer>H		<Plug>(w3m-back)
+	nmap <buffer>J		<Plug>(w3m-next-link)
+	nmap <buffer>K		<Plug>(w3m-prev-link)
+	nmap <buffer>L		<Plug>(w3m-forward)
+	nmap <buffer><C-L>	<Plug>(w3m-address-bar)
+	nmap <buffer>R		:<C-u>call w3m#Reload()<CR>
+	nmap <buffer><leader>o	:<C-u>call w3m#OpenExternalBrowser()<CR>
   endif
+endfunction
+
+function! w3m#OpenExternalBrowser()
+	call w3m#CheckUnderCursor()
+	execute "silent !" . g:w3m#external_browser . ' ' . b:last_url 
+	execute "redraw!"
 endfunction
 
 function! s:default_highligh()
